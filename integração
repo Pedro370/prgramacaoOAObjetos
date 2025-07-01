@@ -1,0 +1,33 @@
+// BoardControllerIntegrationTest.java
+package com.example.tasks;
+
+import com.example.tasks.model.Board;
+import com.example.tasks.repository.BoardRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class BoardControllerIntegrationTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Autowired
+    private BoardRepository boardRepository;
+
+    @Test
+    public void testCreateBoard() {
+        Board board = new Board(null, "Projeto X", "Board de exemplo", null);
+
+        ResponseEntity<Board> response = restTemplate.postForEntity("/boards", board, Board.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getId()).isNotNull();
+    }
+}
